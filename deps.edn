@@ -1,0 +1,28 @@
+{:paths ["src" "resources" "dev"]
+ :deps {org.clojure/clojure {:mvn/version "1.12.0"}
+
+        ;; Pedestal
+        io.pedestal/pedestal.jetty {:mvn/version "0.7.2"}
+
+        ;; Component
+        com.stuartsierra/component {:mvn/version "1.1.0"}
+        com.stuartsierra/component.repl {:mvn/version "0.2.0"}
+
+        ;; Logging
+        org.slf4j/slf4j-simple {:mvn/version "2.0.9"}
+
+        ;; Configuration
+        aero/aero {:mvn/version "1.1.6"}}
+
+ :aliases
+ {:run-m {:main-opts ["-m" "pedestal-microservice.core"]}
+  :run-x {:ns-default pedestal-microservice.pedestal-microservice
+          :exec-fn greet
+          :exec-args {:name "Clojure"}}
+  :build {:deps {io.github.clojure/tools.build
+                 {:mvn/version "0.10.5"}}
+          :ns-default build}
+  :test {:extra-paths ["test"]
+         :extra-deps {org.clojure/test.check {:mvn/version "1.1.1"}
+                      io.github.cognitect-labs/test-runner
+                      {:git/tag "v0.5.1" :git/sha "dfb30dd"}}}}}
