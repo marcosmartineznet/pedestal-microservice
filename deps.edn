@@ -15,10 +15,7 @@
         aero/aero {:mvn/version "1.1.6"}}
 
  :aliases
- {:run-m {:main-opts ["-m" "pedestal-microservice.core"]}
-  :run-x {:ns-default pedestal-microservice.pedestal-microservice
-          :exec-fn greet
-          :exec-args {:name "Clojure"}}
+ {:run {:main-opts ["-m" "pedestal-microservice.app"]}
   :build {:deps {io.github.clojure/tools.build
                  {:mvn/version "0.10.5"}}
           :ns-default build}
