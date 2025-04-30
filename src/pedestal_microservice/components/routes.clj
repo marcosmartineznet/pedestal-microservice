@@ -1,4 +1,4 @@
-(ns pedestal-microservice.service.components.routes
+(ns pedestal-microservice.components.routes
   (:require [com.stuartsierra.component :as component]
             [io.pedestal.http.route :as route]
             [io.pedestal.http :as http]))

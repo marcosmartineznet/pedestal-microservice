@@ -1,0 +1,9 @@
+CREATE TABLE  listing (
+       id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+       title VARCHAR(255) NOT NULL,
+       body VARCHAR NOT NULL,
+       created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+       updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+);
+
+CREATE INDEX ON listing (id);

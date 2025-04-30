@@ -1,7 +1,6 @@
-(ns pedestal-microservice.server.components.server
+(ns pedestal-microservice.components.server
   (:require [com.stuartsierra.component :as component]
             [io.pedestal.http :as http]))
-
 
 (defrecord Server [instance service]
   component/Lifecycle
