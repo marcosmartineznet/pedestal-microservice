@@ -2,5 +2,5 @@
                 :test :test
                 :prod :prod}
  :application {:port #long #profile {:local 8088
-                               :prod #or [#env APPLICATION_PORT 8080]}}
+                                     :prod #or [#env APPLICATION_PORT 8080]}}
  :database {:jdbcUrl #profile {:local "jdbc:postgresql://localhost:5432/postgres?user=postgres&password=test"}}}

@@ -2,24 +2,24 @@
   (:require [com.stuartsierra.component :as component]
             [io.pedestal.http :as http]
             [pedestal-microservice.config :as config]
-            [pedestal-microservice.echo.core :as echo]
             [pedestal-microservice.components.database :as database]
             [pedestal-microservice.components.routes :as routes]
             [pedestal-microservice.components.server :as server]
-            [pedestal-microservice.service.core :as service]
-            [pedestal-microservice.service.components.service :as service-component]))
+            [pedestal-microservice.components.service :as service]
+            [pedestal-microservice.service.listing.routes.core :as listing.routes]
+            [pedestal-microservice.service.listing.controller :as listing.controller]))
 
 (defn new-system-map [profile]
   (let [config (config/get-config profile)
         db-spec (config/db-spec config)]
     (component/system-map
      :config config
+     :routes (routes/new-routes listing.routes/specs)
      :database (database/new-component db-spec)
-     :routes (routes/new-routes
-              echo/routes
-              service/routes)
-     :service (service-component/new)
-     :server (server/new))))
+     :service (service/new)
+     :server (server/new)
+
+     :ListingController (listing.controller/new-listing-controller))))
 
 (defn -main []
   (println "Starting application...")
