@@ -1,35 +1,22 @@
 (ns pedestal-microservice.service.listing.controller
   (:require [com.stuartsierra.component :as component]
-            [next.jdbc :refer [with-transaction]]
-            [pedestal-microservice.service.listing.data.repository :as ListingRepository]))
+            [next.jdbc :as jdbc]
+            [pedestal-microservice.service.listing.port.sql.repository :as listing.repo]
+            [pedestal-microservice.service.listing.adapter.sql :as listing.adapter.sql]))
 
-(defprotocol ListingController
-  (create-listing! [this input])
-  (get-by-id [this id])
-  (get-all [this]))
+(defn create-listing! [input storage]
+  (jdbc/with-transaction [tx storage]
+    (-> input
+        (listing.repo/save! tx)
+        listing.adapter.sql/sql->service)))
 
-(defrecord ListingControllerImpl [database datasource]
-  component/Lifecycle
-  (start [this]
-    (assoc this :datasource (database)))
+(defn get-by-id [id storage]
+  (jdbc/with-transaction [tx storage {:read-only true}]
+    (-> id
+        (listing.repo/find-by-id tx)
+        listing.adapter.sql/sql->service)))
 
-  (stop [this]
-    (assoc this :datasource nil))
-
-  ListingController
-  (create-listing! [_ input]
-    (with-transaction [tx datasource]
-      (ListingRepository/save! tx input)))
-
-  (get-by-id [_ id]
-    (with-transaction [tx datasource {:read-only true}]
-      (ListingRepository/find-by-id tx id)))
-
-  (get-all [_]
-    (with-transaction [tx datasource {:read-only true}]
-      (ListingRepository/find-all tx))))
-
-(defn new-listing-controller []
-  (component/using
-   (map->ListingControllerImpl {})
-   [:database]))
+(defn get-all [storage]
+  (jdbc/with-transaction [tx storage {:read-only true}]
+    (->> (listing.repo/find-all tx)
+         (map listing.adapter.sql/sql->service))))

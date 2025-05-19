@@ -1,15 +1,21 @@
 (ns pedestal-microservice.components.routes
   (:require [com.stuartsierra.component :as component]
-            [io.pedestal.http.route :as route]
-            [io.pedestal.http :as http]))
+            [io.pedestal.http :as http]
+            [io.pedestal.http.body-params :refer [body-params]]
+            [pedestal-microservice.service.listing.port.http.handler :as listing.handler]))
+
+(def specs
+  #{["/listing" :post [(body-params) `listing.handler/create-listing]]
+    ["/listing" :get `listing.handler/get-all-listings]
+    ["/listing/:id" :get [(body-params) `listing.handler/get-listing-by-id]]})
 
 (defrecord Routes [routes]
   component/Lifecycle
   (start [this]
-    (assoc this :expanded-routes (route/expand-routes routes)))
+    this)
 
   (stop [this]
-    (assoc this :expanded-routes nil)))
+    this))
 
-(defn new-routes [& route-sets]
-  (map->Routes {:routes (reduce #(apply conj %1 %2) #{} route-sets)}))
+(defn new-routes [& additional-specs]
+  (map->Routes {:routes (into #{} cat (conj additional-specs specs))}))

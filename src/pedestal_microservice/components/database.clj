@@ -13,5 +13,4 @@
                                   (locations (into-array String ["classpath:database/migration"]))
                                   (table "schema_version")
                                   (load))]
-                       (println "Running database migration")
                        (.migrate fw))))))

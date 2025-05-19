@@ -1,4 +1,4 @@
-(ns pedestal-microservice.service.listing.data.repository
+(ns pedestal-microservice.service.listing.port.sql.repository
   (:require [next.jdbc :as jdbc]
             [next.jdbc.result-set :as rs]
             [next.jdbc.sql :as sql]))
@@ -9,8 +9,8 @@
 (defn find-all [conn]
   (sql/query conn ["select * from listing"] opts))
 
-(defn find-by-id [conn id]
-  (jdbc/execute-one! conn ["select * from listing where id = ?" id] opts))
+(defn find-by-id [id conn]
+  (sql/get-by-id conn :listing id opts))
 
-(defn save! [conn listing]
+(defn save! [listing conn]
   (sql/insert! conn :listing listing opts))

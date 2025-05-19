@@ -1,6 +1,7 @@
 (ns pedestal-microservice.components.service
   (:require [com.stuartsierra.component :as component]
             [io.pedestal.http :as http]
+            [io.pedestal.http.route :as route]
             [io.pedestal.interceptor :refer [interceptor]]
             [pedestal-microservice.config :as config]))
 
@@ -20,7 +21,7 @@
 
 (defn new-service-map [routes config]
   (let [port (config/get-application-port config)]
-    {::http/routes (:expanded-routes routes)
+    {::http/routes (route/expand-routes (:routes routes))
      ::http/type :jetty
      ::http/port port}))
 
@@ -40,7 +41,7 @@
           (dev-service-map-init srvc-map))
         (service-dependencies-interceptor service))))
 
-(defrecord MicroserviceService [config routes database ListingController]
+(defrecord MicroserviceService [config routes database]
   component/Lifecycle
   (start [this]
     (assoc this :runnable-service (-> routes
@@ -53,4 +54,4 @@
 (defn new []
   (component/using
    (map->MicroserviceService {})
-   [:config :routes :database :ListingController]))
+   [:config :routes :database]))
